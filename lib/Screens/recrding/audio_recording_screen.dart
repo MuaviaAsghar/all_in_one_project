@@ -55,7 +55,7 @@ class _AudioRecordingScreenState extends State<AudioRecordingScreen> {
   }
 
   Future<void> stopRecording() async {
-    final path = await audioRecorder.stop();
+    await audioRecorder.stop();
     setState(() {
       isRecording = false;
     });

@@ -24,7 +24,7 @@ class _CreateQrCodeState extends State<CreateQrCode> {
       data: qrData!,
       errorCorrectLevel: QrErrorCorrectLevel.H,
     );
-    QrImage qrImage = QrImage(qrCode);
+    QrImage(qrCode);
     // Dispose of any controllers or resources here if needed
     super.dispose();
   }
