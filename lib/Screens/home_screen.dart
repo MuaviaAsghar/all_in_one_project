@@ -1,10 +1,11 @@
 import 'package:all_in_one_project/Screens/camscanner/cam_scanner_screen.dart';
 import 'package:all_in_one_project/Screens/finger_print_screen.dart';
-import 'package:all_in_one_project/Screens/localization/translated_screen.dart';
 import 'package:all_in_one_project/Screens/qr_code/cam_scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'localization/translation_screen.dart';
 import 'recrding/audio_recording_screen.dart';
 import 'recrding/video_recording_screen.dart';
 
@@ -23,7 +24,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     flutterLocalization = FlutterLocalization.instance;
-    currentlocale = flutterLocalization.currentLocale?.languageCode ?? 'en';
+    _loadLocale();
+  }
+
+  void _loadLocale() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      currentlocale = prefs.getString('locale') ??
+          flutterLocalization.currentLocale?.languageCode ??
+          'en';
+    });
+    flutterLocalization.translate(currentlocale);
   }
 
   String getLocaleName() {
@@ -36,17 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
         return "French";
       case "ps":
         return "Pashto";
+      case "ur":
+        return "Urdu";
       default:
         return "English";
     }
-  }
-
-  void setLocale(String? value) {
-    if (value == null) return;
-    flutterLocalization.translate(value);
-    setState(() {
-      currentlocale = value;
-    });
   }
 
   void navigateToScreen(Widget route, BuildContext context) {
@@ -59,38 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(LocaleData.title.getString(context)),
+        title: const Text("Home Screen"),
         centerTitle: true,
-      ),
-      drawer: Padding(
-        padding: const EdgeInsets.only(top: 50),
-        child: Drawer(
-          child: DropdownButton<String>(
-            icon: const Icon(Icons.language),
-            value: currentlocale,
-            hint: Text(getLocaleName()),
-            dropdownColor: Colors.blue,
-            onChanged: setLocale,
-            items: const [
-              DropdownMenuItem(
-                value: "en",
-                child: Text("English"),
-              ),
-              DropdownMenuItem(
-                value: "de",
-                child: Text("Dutch"),
-              ),
-              DropdownMenuItem(
-                value: "fr",
-                child: Text("French"),
-              ),
-              DropdownMenuItem(
-                value: "ps",
-                child: Text("Pashto"),
-              ),
-            ],
-          ),
-        ),
       ),
       body: Center(
         child: Column(
@@ -138,6 +113,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   navigateToScreen(const CamScannerScreen(), context);
                 },
                 child: const Text("Navigate to Cam Scanner Screen"),
+              ),
+            ),
+            Padding(
+              padding: constantPadding,
+              child: ElevatedButton(
+                onPressed: () {
+                  navigateToScreen(const TranslationScreen(), context);
+                },
+                child: const Text("Navigate to Translation Screen"),
               ),
             ),
           ],

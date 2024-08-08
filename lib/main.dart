@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
-import 'Screens/home_screen.dart';
 import 'Screens/localization/translated_screen.dart';
+import 'Screens/localization/translation_screen.dart';
 
 void main() {
   runApp(const MyApp());
